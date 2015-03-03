@@ -1,0 +1,33 @@
+{
+  "author": "Kai Kramer <kai@gaulstall.de.de>",
+  "name": "mqtt-knx",
+  "description": "KNX to MQTT bridge",
+  "version": "0.0.1",
+  "keywords": [
+    "mqtt",
+    "automation",
+    "knx",
+    "knxd",
+    "eibd",
+    "eib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/krambox/mqtt-knx.git"
+  },
+  "main": "mqtt-knx",
+  "bin": {
+    "mqtt-exec": "mqtt-knx.js"
+  },
+  "scripts": {"start": "./mqtt-knx.js"},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "mqtt": ">=1.1.0",
+    "optimist": ">=0.6.1",
+    "eibd": ">=0.2.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {}
+}

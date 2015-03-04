@@ -17,7 +17,7 @@ var argv = optimist
   .argv;
 
 
-function groupsocketlisten(opts, callback) {
+function listenEIBD(opts, callback) {
   var conn = eibd.Connection();
 
   conn.socketRemote(opts, function () {
@@ -42,37 +42,23 @@ function getDPTValue(val, type) {
       }
       break;
     case 'DPT5':
-      return val.toString() + '%';
+      return (val * 100 / 255).toFixed(1) + '%';
     case 'DPT9':
-      return val.toString();
+      return val.toFixed(2);
     default:
       return undefined;
   }
 }
 
-groupsocketlisten({host: argv.eibd, port: argv.eibdport}, function (parser) {
+listenEIBD({host: argv.eibd, port: argv.eibdport}, function (parser) {
 
   parser.on('write', function (src, dest, type, val) {
+    console.log('Write from ' + src + ' to ' + dest + ': ' + val + ' [' + type + ']');
     var message = getDPTValue(val, type);
     if (message) {
+      console.log(argv.topic + '/' + dest, message);
       client.publish(argv.topic + '/' + dest, message, {retain: argv.retain});
     }
-    else {
-      console.log('Write from ' + src + ' to ' + dest + ': ' + val + ' [' + type + ']');
-
-    }
-  });
-
-  parser.on('response', function (src, dest, type, val) {
-    console.log('Response from ' + src + ' to ' + dest + ': ' + val + ' [' + type + ']');
-    //client.publish('eibd/'+dest, 'Response from src: '+src+': '+val+' ['+type+']', {retain: true});
-
-  });
-
-  parser.on('read', function (src, dest) {
-    console.log('Read from ' + src + ' to ' + dest);
-    //client.publish('eibd/'+dest, 'Read from src: '+src, {retain: true});
-
   });
 
 });

@@ -32,6 +32,17 @@ var client = mqtt.connect(argv.mqtt, function (parser) {
   });
 });
 
+client.subscribe(argv.topic + '/+/+/+/set');
+
+client.on('message', function (topic, message) {
+  if (message == 'true') {
+
+  } else if (message == 'true') {
+
+  }
+  //console.log(topic, message.toString());
+});
+
 function getDPTValue(val, type) {
   switch (type) {
     case 'DPT1':

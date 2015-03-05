@@ -22,11 +22,12 @@ var mqttClient = mqtt.connect(argv.mqtt);
 var eibdConn = eibd.Connection();
 var eibdOpts = {host: argv.eibd, port: argv.eibdport};
 
-function groupWriteDPT1(gad, value) {
+function groupWrite(gad, messageAction, DPTType, value) {
+  console.log('groupWrite', gad, messageAction, DPTType, value);
   var address = eibd.str2addr(gad);
   eibdConn.socketRemote(eibdOpts, function () {
     eibdConn.openTGroup(address, 1, function (err) {
-      var msg = eibd.createMessage('write', 'DPT3', parseInt(value));
+      var msg = eibd.createMessage(messageAction, DPTType, parseInt(value));
       eibdConn.sendAPDU(msg, function (err) {
         if (err) {
           console.error(err);
@@ -40,8 +41,17 @@ mqttClient.subscribe(argv.topic + '/+/+/+/set');
 
 mqttClient.on('message', function (topic, message) {
   var gad = topic.substr(argv.topic.length + 1, topic.length - argv.topic.length - 5);
-  console.log('mqttClient.on', gad, message.toString());
-  groupWriteDPT1(gad, message.toString());
+  var value = message.toString();
+  console.log('mqttClient.on', gad, value);
+  if (value === 'true') {
+    groupWrite(gad, 'write', 'DPT3', '1');
+  }
+  else if (value === 'false') {
+    groupWrite(gad, 'write', 'DPT3', '0');
+  }
+  else {
+    groupWrite(gad, 'write', 'DPT5', value);
+  }
 });
 
 eibdConn.socketRemote(eibdOpts, function () {

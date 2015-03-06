@@ -26,12 +26,11 @@ Send DPT1 as true/false, DPT5 as 0..100% and DPT9 values to a mqtt broker. The t
 
     ./mqtt-knx.js -e smarthome -m mqtt://localhost
 
-Subcript all knx messages
+Subscribe all knx messages:
 
     mosquitto_sub  -h mac-server.local -t 'knx/#' -v
 
+Switch lamp on/off with a publish to the broker:
 
-Switch lamp on/off with a publish to the broker
-
-    mosquitto_pub -h mac-server.local -t 'knx/1/1/111/set' -m 'false'
+    mosquitto_pub -h mac-server.local -t 'knx/1/1/111/set' -m 'true'
     mosquitto_pub -h mac-server.local -t 'knx/1/1/111/set' -m 'false'

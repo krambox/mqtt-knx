@@ -33,7 +33,7 @@ function groupWrite(gad, messageAction, DPTType, value) {
 mqttClient.subscribe(topic + '/+/+/+/set');
 
 mqttClient.on('message', function (topic, message) {
-    var gad = topic.substr(topic.length + 1, topic.length - topic.length - 5);
+    var gad = topic.split("/").slice(-4, -1).join('/');
     var value = message.toString();
     console.log('mqttClient.on', gad, value);
     if (value === 'true') {
